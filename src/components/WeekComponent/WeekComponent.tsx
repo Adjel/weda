@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Day, getDay} from '../day/day';
+import { Day, getDay } from '../day/DayComponent';
 import { getDateFromDays } from '../../utils';
 
 export interface Week {
@@ -73,24 +73,32 @@ function moveWeek(isForward: boolean) {
     updateWeek(getDateFromDays(refDate, move));
 }
 
-  return <section className='flex flex-row gap-8'>
+  return <section className='flex flex-row gap-8 items-start'>
     {
       isBackwardEnable &&
       <button onClick={() => moveWeek(false)}>{`<`}</button>
     }
-    {week?.week?.map((day) => 
-    <div className='flex flex-col items-center'>
+    {week?.week?.map((day, index) => 
+    <div key={day.date.toDateString()} className='flex flex-col items-center'>
       <div className='text-gray-500'>
-   {day.date.toLocaleDateString('fr-FR', { weekday: 'short' })}
+        {day.date.toLocaleDateString('fr-FR', { weekday: 'short' })}
       </div>
       <div>
       {day.date.getDate()}
       {day.date.toLocaleDateString('fr-FR', { month: 'short' })}
       </div>
-         
+      <div key={index} className='pt-4 flex flex-col gap-2 items-center'>
+        {day.slots.map((slot, index) => 
+        slot.start ?
+        <div key={index} className=' hover:bg-black hover:text-white cursor-pointer px-6 w-fit h-fit rounded-lg bg-slate-500'>{slot.start?.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
+        :
+        <div>{`—`}</div>
+      )
+      }
+      </div>
     </div>
     )}
-        <button onClick={() => moveWeek(true)}>{`>`}</button>
+    <button onClick={() => moveWeek(true)}>{`>`}</button>
   </section>;
 }
 

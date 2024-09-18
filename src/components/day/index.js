@@ -1,2 +1,2 @@
-export * from './day';
-export { default } from './day';
+export * from "./day";
+export { default } from "./day";
