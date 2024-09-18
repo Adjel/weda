@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Day, getDay } from '../day/DayComponent';
+import { Day, DayComponent, getDay } from '../day/DayComponent';
 import { getDateFromDays } from '../../utils';
 
 export interface Week {
@@ -89,11 +89,8 @@ function moveWeek(isForward: boolean) {
       </div>
       <div key={index} className='pt-4 flex flex-col gap-2 items-center'>
         {day.slots.map((slot, index) => 
-        slot.start ?
-        <div key={index} className=' hover:bg-black hover:text-white cursor-pointer px-6 w-fit h-fit rounded-lg bg-slate-500'>{slot.start?.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
-        :
-        <div>{`—`}</div>
-      )
+          <DayComponent key={index} slot={slot}/>
+        )
       }
       </div>
     </div>

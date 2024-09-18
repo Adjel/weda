@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { getDateFromDays } from "../../utils"
 
 
@@ -55,13 +56,11 @@ function generateRandomSlots(date: Date): Slot[] {
     slots.push({ start, end });
   
   }
-
   return slots;
 }
 
 
 export function getDay(date: Date, days: number = 0): Day {
-
   const newDate = new Date(date);
   newDate.setDate(newDate.getDate() + days);
 
@@ -71,5 +70,34 @@ export function getDay(date: Date, days: number = 0): Day {
     date: newDate,
     slots
   };
+}
+
+export function DayComponent({ slot }: { slot?: Slot }) {
+  const [isClicked, setIsClicked] = useState(-1)
+
+  const handleClick = () => {
+    if (isClicked < 2) {
+      setIsClicked(isClicked+1)
+    } else {
+      setIsClicked(-1)
+    }
+    console.log(isClicked)
+  }
+
+  let bgColor 
+
+  if (isClicked === 0 ) {
+    bgColor = "bg-black text-white"
+  } else if (isClicked === 1) {
+     bgColor = "bg-green-500"
+  } else if (isClicked === 2) {
+     bgColor = "bg-blue-500"
+  } else {
+    bgColor = "bg-slate-500"
+  }
+
+  return <div>
+      <div onClick={handleClick} className={`hover:bg-black hover:text-white cursor-pointer px-6 w-fit h-fit rounded-lg ${bgColor}`}>{slot?.start?.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
+  </div>
 }
 
