@@ -1,3 +1,4 @@
+import { getDateFromDays } from "../../utils"
 
 
 export interface Day {
@@ -10,21 +11,33 @@ export interface Slot {
   end?: Date
 }
 
-function getRandomHour(startDate: Date): Date {
+function getRandomHour(startDate: Date, lastStart: Date): Date {
+  const endOfDay = new Date(startDate);
+  endOfDay.setHours(23, 59, 0, 0);
 
-  console.log(startDate)
+  // random time
+  const startTime = startDate.getTime();
+  const endTime = endOfDay.getTime();
+  const randomTime = Math.random() * (endTime - startTime) + startTime;
 
-  const endofDay = new Date(startDate)
-  endofDay.setHours(23, 59, 0, 0)
+  let newTime = new Date(randomTime);
 
-  const randomTime = Math.random() * (endofDay.getHours() - startDate.getHours()) + endofDay.getHours();
+  // get rounded hour
+  const minutes = newTime.getMinutes();
+  if (minutes < 15) {
+    newTime.setMinutes(0, 0, 0); 
+  } else if (minutes >= 15 && minutes < 45) {
+    newTime.setMinutes(30, 0, 0); 
+  } else {
+    newTime.setMinutes(0, 0, 0);
+    newTime.setHours(newTime.getHours() + 1);
+  }
 
-  console.log(randomTime)
-
-  const newTime = new Date(startDate)
-  newTime.setHours(randomTime)
-
-  return newTime
+  // avoid two same start
+  if (newTime.getHours() === lastStart.getHours()) {
+    return getRandomHour(startDate, lastStart)
+  }
+  return newTime;
 }
 
 
@@ -33,12 +46,11 @@ function generateRandomSlots(date: Date): Slot[] {
   const slots: Slot[] = [];
 
   let start = new Date(date.setHours(0, 0, 0, 0))
-  let end = getRandomHour(start)
+  let end = getRandomHour(start, start)
 
-  for (let i = 0; i < numSlots && end.getHours() < 23.30; i++) {
-
-    start = end
-    end = getRandomHour(start)
+  for (let i = 0; i < numSlots && end < getDateFromDays(date, 1); i++) {
+    start = getRandomHour(end, start)
+    end = getRandomHour(start, start)
 
     slots.push({ start, end });
   
@@ -49,12 +61,11 @@ function generateRandomSlots(date: Date): Slot[] {
 
 
 export function getDay(date: Date, days: number = 0): Day {
+
   const newDate = new Date(date);
   newDate.setDate(newDate.getDate() + days);
 
-
-
-  const slots = generateRandomSlots(date);
+  const slots = generateRandomSlots(newDate);
 
   return {
     date: newDate,

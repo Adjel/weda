@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DayComponent, { Day, getDay } from '../day/DayComponent';
+import { Day, getDay } from '../day/DayComponent';
 import { getDateFromDays } from '../../utils';
 
 export interface Week {
