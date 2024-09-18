@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface Day {
-  day: Date,
+  date: Date,
   slots: Slot[]
 }
 
@@ -10,9 +10,11 @@ export interface Slot {
   end: Date
 }
 
-export function getDay(nextDay:number = 0) {
+export function getDay(date: Date, days:number = 0): Day {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + days);
   return {
-    day: new Date(),
+    date: newDate,
     slots: []
   }
 }
